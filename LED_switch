@@ -1,0 +1,16 @@
+#include "main.h"
+#include <stm32f4xx.h>
+int main()
+{
+RCC->AHB1ENR |= (1U<<2) | (1U<<0);
+GPIOA->MODER &= ~(1U<<0);
+GPIOA->MODER &= ~(1U<<1);
+GPIOC->MODER = 0x55555555;
+while(1)
+{
+if(GPIOA->IDR & (1U<<0))
+GPIOC->ODR = 0xFFFFFFFF;
+else
+GPIOC->ODR = 0x00000000;
+}
+}

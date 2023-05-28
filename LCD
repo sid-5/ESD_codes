@@ -1,116 +1,80 @@
 #include "main.h"
-
-#include "stm32f4xx.h"
-
-
+#include“stm32f4xx.h”
+//RS PA4
+//RW PA5
+//E PA6
 void LCD_init(void);
-
-void LCD_command(unsigned char command); void LCD_data(unsigned char data);
-
-void LCD_write(unsigned char "string);
-
+void LCD_command(unsigned char command);
+void LCD_data(unsigned char data);
+void LCD_write(unsigned char *string);
 void delay_ms(unsigned char time);
-
 int main(){
-
 unsigned char a[15]="Welcome To";
-
-unsigned char b[15]="Pict";
-
-//int 1-0;*/
-
-RCC->AHBIENR = (1<<0)|(1<<1);//configure as GPO
-
-GPIOA->MODER = (1<<8)|(1<<10)|(1<<12);//PA4, PAS, PA6 GPIOB->MODER |= 0x5555://PBO-PB16 OUTPUT
-
-LCD init() init
-
+unsigned char b[15] = " Pict";
+//int l=0;*/
+RCC->AHB1ENR |= (1<<0)|(1<<1);//configure as GPO
+GPIOA->MODER |= (1<<8)|(1<<10)|(1<<12);//PA4, PA5, PA6 as GPIO
+GPIOB->MODER |= 0x5555;//PB0-PB16 OUTPUT
+LCD_init(); //init
 LCD_command(0x01); //LCD clear
-
 LCD_write(a);
-
-LCD_command(0xc0):// Second line position 1
-
+LCD_command(0xc0);// Second line position 1
 LCD_write(b);
+delay_ms(10);
+return 0;
 
-delay_ms(10); return 0;
-
+}
 void LCD_init(){
-
-LCD_command(0x38);//8bit mode and 5x7 matrix delay_ms(10);
-
+LCD_command(0x38);//8bit mode and 5x7 matrix
+delay_ms(10);
 LCD_command(0x0c);//off(display on/off)
-
 delay_ms(10);
-
-LCD command(0x0e);
-
+LCD_command(0x0e);
 delay_ms(10);
-
-LCD_command(0x01)://clear LCD
-
+LCD_command(0x01);//clear LCD
 delay_ms(10);
-
-LCD_command(0x80)://set cursor to first line first position
-
-delay ms(10);
+LCD_command(0x80);//set cursor to first line first position
+delay_ms(10);}
 void LCD_command(unsigned char command){
-
-GPIOB->ODR = 0x00000000; //clear LCD data lines GPIOA->BSRR |= (1<<20); //RS = 0 for command
-
-GPIOA->BSRR = (1<<21); // RW = 0 for write
-
-GPIOB->BSRR = command<<16; //put command on data line GPIOA->BSRR |= (1<<6); // en =1
-
+GPIOB->ODR = 0x00000000; //clear LCD data lines
+GPIOA->BSRR |= (1<<20); //RS = 0 for command
+GPIOA->BSRR |= (1<<21); // RW = 0 for write
+GPIOB->BSRR = command<<16; //put command on data line
+GPIOA->BSRR |= (1<<6); // en =1
 GPIOA->BSRR &= ~(1<<22);
-
 delay_ms(10);
-
-GPIOA->BSRR |(1<<22); // en-0
-
-GPIOA->BSRR &= ~(1<<6); // en =1
-}
-void LCD data(unsigned char data) { GPIOB->ODR = 0x00000000; //clear LCD data lines 1
-
-GPIOA->BSRR &= ~(1<<20); GPIOA->BSRR = (1<<4); // RS = 1
-
-GPIOA->BSRR = (1<<21); // RW = 0 for write
-
-GPIOB->BSRR = data<<16;//put command on data line
-
-GPIOA->BSRR = (1<<6); // en =1
-
-GPIOA->BSRR &= ~(1<<22);
-
-delay_ms(10);
-
 GPIOA->BSRR |= (1<<22); // en = 0
-
 GPIOA->BSRR &= ~(1<<6); // en =1
-
 }
-
-void LCD write(unsigned char *string) {
-
+void LCD_data(unsigned char data){
+GPIOB->ODR = 0x00000000; //clear LCD data lines
+GPIOA->BSRR &= ~(1<<20);
+GPIOA->BSRR |= (1<<4); // RS = 1
+GPIOA->BSRR |= (1<<21); // RW = 0 for write
+GPIOB->BSRR = data<<16;//put command on data line
+GPIOA->BSRR |= (1<<6); // en =1
+GPIOA->BSRR &= ~(1<<22);
+delay_ms(10);
+GPIOA->BSRR |= (1<<22); // en = 0
+GPIOA->BSRR &= ~(1<<6); // en =1
+}
+void LCD_write(unsigned char *string){
 int l=0;
-
 while(string[l] != '\0') // searching the null terminator in the sentence
 {
 LCD_data(string[l]);
 l++;
 delay_ms(5);
 }
-} void right(unsigned char *string) {
-
-int i=0;
-
+}
+/*void right(unsigned char *string){
+int i =0;
 while(string[i]!="\0"){
-
 LCD_data(string[i]);
-
 i++;
 }
-
+}*/
 void delay_ms(unsigned char time){
-
-for(j=0;j<time;j++){ for(i=0;i<8002;i++);})
+unsigned int i,j;
+for(j=0;j<time;j++){
+for(i = 0;i<8002;i++);}}
